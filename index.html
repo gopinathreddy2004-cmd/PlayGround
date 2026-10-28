@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>The Story of India — A 3D Animated History</title>
+  <meta name="description" content="A cinematic 3D journey through 5,000 years of Indian history — from the Indus Valley to the Republic. Rendered live in your browser." />
+  <meta name="theme-color" content="#0b0a08" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0a08'/%3E%3Ccircle cx='32' cy='32' r='17' fill='none' stroke='%23d8b26a' stroke-width='2.5'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23e8873a'/%3E%3Cpath d='M32 11v42M11 32h42M17 17l30 30M47 17L17 47' stroke='%23d8b26a' stroke-width='1.6'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three.module.js" } }
+  </script>
+</head>
+<body>
+  <main id="app">
+    <canvas id="stage" aria-label="3D animated scenes from Indian history" role="img"></canvas>
+    <div class="grade" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="flash" id="flash" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="13"/><path d="M16 3v26M3 16h26M6.8 6.8l18.4 18.4M25.2 6.8L6.8 25.2"/></svg>
+        </span>
+        <span class="brand-text"><strong>BHARAT</strong><em>a 3D history</em></span>
+      </div>
+      <nav class="top-actions" aria-label="Film controls">
+        <button class="ghost" id="chaptersBtn" aria-expanded="false" aria-controls="chaptersPanel">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h9"/></svg>
+          <span>Chapters</span>
+        </button>
+        <button class="ghost record" id="recordBtn">
+          <span class="dot" aria-hidden="true"></span>
+          <span>Record film</span>
+        </button>
+        <button class="ghost" id="soundBtn" aria-pressed="true">
+          <svg class="icon-on" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 7.5h3L12 4v12L7 12.5H4zM15 7a4.2 4.2 0 010 6M17.2 4.8a7 7 0 010 10.4"/></svg>
+          <span>Sound on</span>
+        </button>
+      </nav>
+    </header>
+
+    <div class="chapter-card" id="chapterCard" aria-live="polite">
+      <span class="chapter-num" id="chapterNum">01</span>
+      <div class="chapter-body">
+        <p class="chapter-kicker" id="chapterKicker">CHAPTER ONE</p>
+        <h2 class="chapter-name" id="chapterName">Indus Valley</h2>
+        <p class="chapter-dates" id="chapterDates">3300 — 1300 BCE</p>
+      </div>
+    </div>
+
+    <aside class="chapters-panel" id="chaptersPanel" aria-label="Chapters" aria-hidden="true">
+      <div class="panel-head">
+        <p>Seven worlds</p>
+        <button class="close" id="closeChapters" aria-label="Close chapters">
+          <svg viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15"/></svg>
+        </button>
+      </div>
+      <ol class="chapter-list" id="chapterList"></ol>
+      <div class="panel-foot">
+        <p>Artistic reconstructions. Dates follow mainstream scholarship; borders and architecture are interpretive.</p>
+        <p class="credit">Rendered live with Three.js · Score generated with Web Audio</p>
+      </div>
+    </aside>
+    <button class="scrim" id="scrim" aria-label="Close chapters" tabindex="-1"></button>
+
+    <div class="caption-wrap" id="captionWrap">
+      <p class="caption" id="caption"></p>
+    </div>
+
+    <div class="intro" id="intro">
+      <div class="intro-inner">
+        <p class="eyebrow"><span class="deva">भारत</span><span class="rule"></span>An immersive 3D documentary</p>
+        <h1>The Story<br /><span>of India</span></h1>
+        <p class="intro-sub">Five thousand years. Seven worlds. One civilisation.</p>
+        <button class="play-film" id="playFilm">
+          <span class="play-ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6.5l9 5.5-9 5.5z"/></svg></span>
+          <span>Play the film</span>
+        </button>
+        <p class="intro-meta"><span>7 chapters</span><span>1 min 28 sec</span><span>Best with sound</span></p>
+      </div>
+      <p class="intro-foot">Every frame rendered live in your browser · No video files</p>
+    </div>
+
+    <div class="endcard" id="endcard" aria-hidden="true">
+      <p class="eyebrow"><span class="deva">भारत</span><span class="rule"></span>Fin</p>
+      <h2>The story<br />continues.</h2>
+      <p class="end-sub">From the bricks of Harappa to the edge of lunar orbit.</p>
+      <div class="end-actions">
+        <button class="play-film" id="replay">
+          <span class="play-ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5a7 7 0 11-6.3 4H3l3.9-4 3.6 4H8a5 5 0 106 0"/></svg></span>
+          <span>Watch again</span>
+        </button>
+        <button class="ghost solid" id="exportBtn">Download the film</button>
+      </div>
+    </div>
+
+    <footer class="controls" id="controls">
+      <button class="ctl play" id="playBtn" aria-label="Play">
+        <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5l11 6.5-11 6.5z"/></svg>
+        <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z"/></svg>
+      </button>
+      <span class="time" id="timeNow">0:00</span>
+      <div class="track-wrap">
+        <div class="track" id="track">
+          <div class="track-fill" id="trackFill"></div>
+          <div class="track-ticks" id="trackTicks"></div>
+          <input type="range" id="seek" min="0" max="88" step="0.05" value="0" aria-label="Seek through the film" />
+        </div>
+      </div>
+      <span class="time dim" id="timeTotal">1:28</span>
+      <button class="ctl" id="muteBtn" aria-label="Mute sound">
+        <svg class="i-sound" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 9h4L14 5v14l-5.5-4h-4zM17 8.5a5 5 0 010 7M19.5 6a8.5 8.5 0 010 12"/></svg>
+        <svg class="i-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 9h4L14 5v14l-5.5-4h-4zM17 9l5 6M22 9l-5 6"/></svg>
+      </button>
+      <button class="ctl" id="fullBtn" aria-label="Toggle fullscreen">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+      </button>
+    </footer>
+
+    <div class="rec-badge" id="recBadge"><span></span>REC <b id="recTime">0:00</b></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <div class="loader" id="loader">
+      <div class="loader-chakra" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" />
+          <circle cx="50" cy="50" r="7" />
+          <g id="loaderSpokes"></g>
+        </svg>
+      </div>
+      <p>Raising the subcontinent</p>
+      <span>building seven worlds in three dimensions</span>
+    </div>
+
+    <noscript><div class="nojs">This film needs JavaScript and WebGL to render.</div></noscript>
+  </main>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
